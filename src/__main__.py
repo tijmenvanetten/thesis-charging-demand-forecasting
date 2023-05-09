@@ -2,7 +2,8 @@ from data.data import load_target, load_covariates
 from models.models import load_model
 from features.clustering import cluster_series
 from models.train import train_predict_global, train_predict_local
-from models.eval import evaluate, plot
+from models.eval import evaluate
+from visualization.visualize import plot, plot_seperate
 from tqdm import tqdm
 
 import argparse
@@ -66,9 +67,9 @@ def run(config: Dict) -> Dict:
     logging.info(f"results: {scores}")
 
     # Save Forecast plot
-    fig, axs = plot(predictions, series_clusters)
-    fig.tight_layout()
-    fig.savefig(config['logdir'] + "plots.png")
+    figs = plot_seperate(predictions, series_clusters)
+    for location_id, fig in figs.items():
+        fig.savefig(config['logdir'] + "plots/" + f"{location_id}.png")
     
 
 
@@ -112,6 +113,7 @@ if __name__ == "__main__":
     start_time_str = datetime.today().strftime('%d-%m-%Y_%H-%M-%S')
     logdir = f"logs/{start_time_str}_{config['model']}/"
     os.mkdir(logdir)
+    os.mkdir(logdir + "plots/") 
 
     logging.basicConfig(filename=logdir + "logs.log", encoding='utf-8', level=logging.INFO)
 
