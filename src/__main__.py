@@ -3,7 +3,7 @@ from models.models import load_model
 from features.clustering import cluster_series
 from models.train import train_predict_global, train_predict_local
 from models.eval import evaluate
-from visualization.visualize import plot, plot_seperate
+from visualization.visualize import plot, plot_separate
 from tqdm import tqdm
 
 import argparse
@@ -67,7 +67,7 @@ def run(config: Dict) -> Dict:
     logging.info(f"results: {scores}")
 
     # Save Forecast plot
-    figs = plot_seperate(predictions, series_clusters)
+    figs = plot_separate(predictions, series_clusters)
     for location_id, fig in figs.items():
         fig.savefig(config['logdir'] + "plots/" + f"{location_id}.png")
     

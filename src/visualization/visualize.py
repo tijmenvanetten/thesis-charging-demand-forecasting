@@ -25,12 +25,13 @@ def plot(predictions, series_clusters):
 
     return fig, axs
 
-def plot_seperate(predictions, series_clusters):
+def plot_separate(predictions, series_clusters):
     idx = 0
     figs = {}
     for forecast_cluster, series_cluster in zip(predictions, series_clusters):
         components = forecast_cluster.components
-        for component, location_id in zip(components, components):
+        locations = forecast_cluster.static_covariates.location_id.values
+        for component, location_id in zip(components, locations):
             fig, axs = plt.subplots(1, 1, figsize=(14, 6))
             forecast = forecast_cluster.univariate_component(component)
             actual = series_cluster.univariate_component(component)[forecast_cluster.time_index]
