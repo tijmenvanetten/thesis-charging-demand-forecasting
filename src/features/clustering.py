@@ -23,19 +23,19 @@ def stack_timeseries(series_list: List[TimeSeries]) -> List[TimeSeries]:
     timeseries = TimeSeries.from_dataframe(df)
     return timeseries
 
-def cluster_series(timeseries: List[TimeSeries], k: int) -> List[TimeSeries]:
+def cluster_series(timeseries: List[TimeSeries], k: int, subset: int = None) -> List[TimeSeries]:
     """
    Groups list of timeseries into clusters of timeseries of size k
 
     Args:
         k: number of clusters
+        subset: select smaller number of time series
 
     Returns:
         list of TimeSeries objects each representing a cluster 
     """
 
-    # Temporariliy select subset
-    timeseries = [series for series in timeseries if len(series) == 1035]
+    timeseries = [series for series in timeseries if len(series) == 1035][:subset]
 
     if k == None:
         return timeseries
