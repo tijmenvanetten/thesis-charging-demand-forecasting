@@ -1,9 +1,9 @@
-from data.data import load_target, load_covariates
-from models.models import load_model
+from data import load_target, load_covariates
 from features.clustering import cluster_series
-from models.train import train_predict_global, train_predict_local
-from models.eval import evaluate
-from visualization.visualize import plot, plot_separate
+from models import load_model
+from models import train_predict_global, train_predict_local
+from models import evaluate
+from visualization import plot, plot_separate
 from tqdm import tqdm
 
 import argparse
@@ -25,9 +25,9 @@ def run(config: Dict) -> Dict:
                                  value_cols=['temp_max', 'temp_min', 'sunshine', 'precip'], freq='D')
 
     # Cluster Time Series
-    series_clusters = cluster_series(target_series, k=config['clusters'])
+    series_clusters = cluster_series(target_series, k=config['clusters'], subset=config['subset'])
 
-    if config['model'] == 'DeepAR' or config['model'] == 'TFTModel':
+    if config['model'] in ['TFTModel', 'DeepAR', 'TCNModel']:
         method = 'global'
     else:
         method = 'local'
@@ -43,12 +43,10 @@ def run(config: Dict) -> Dict:
                 target_series=cluster,
                 covariates=covariates,
                 forecast_horizon=config['forecast_horizon'],
-                split=config['split'],
-                scaler=config['scaler'],
+                train_split=config['train_split'],
+                val_split=config['val_split'],
                 num_samples=config['num_samples'],
-                stride=config['stride'],
-                retrain=config['retrain'],
-                verbose=config['verbose'])
+                retrain=config['retrain'],)
         else:
             forecast = train_predict_local(
                 model=model,
@@ -56,7 +54,8 @@ def run(config: Dict) -> Dict:
                 covariates=covariates,
                 num_samples=config['num_samples'],
                 forecast_horizon=config['forecast_horizon'],
-                split=config['split'],
+                train_split=config['train_split'],
+                val_split=config['val_split'],
             )
 
         predictions.append(forecast)
@@ -83,35 +82,25 @@ if __name__ == "__main__":
     # Data options
     parser.add_argument("--location_type", type=str, default='on_forecourt')
     parser.add_argument("--clusters", type=int, default=None)
+    parser.add_argument("--subset", type=int, default=None)
 
     # Training options
     parser.add_argument("--model", type=str, default="Naive",
                         help="a string specifying the model (Naive, DeepAR, ARIMA)")
-    parser.add_argument("--split", type=float, default=0.7)
-    parser.add_argument("--forecast_horizon", type=int, default=1)
-    parser.add_argument("--num_samples", type=int, default=1)
+    parser.add_argument("--train_split", type=float, default=0.7)
+    parser.add_argument("--val_split", type=float, default=0.8)
 
-    # Global Model Options
-    parser.add_argument("--input_chunk_length", type=int)
-    parser.add_argument("--hidden_dim", type=int,
-                        help="Size for feature maps for each hidden RNN layer")
-    parser.add_argument("--n_rnn_layers", type=int)
-    parser.add_argument("--dropout", type=float)
-    parser.add_argument("--num_epochs", type=int)
-    parser.add_argument("--training_length", type=int)
-    parser.add_argument("--scaler", type=str)
-    parser.add_argument("--stride", type=int)
-    parser.add_argument("--retrain", type=bool)
-    parser.add_argument("--verbose", type=bool)
-    parser.add_argument("--batch_size", type=int)
-    parser.add_argument("--lr", type=float)
+    # Inference options
+    parser.add_argument("--retrain", type=bool, default=False)
+    parser.add_argument("--forecast_horizon", type=int, default=1)
+    parser.add_argument("--num_samples", type=int, default=25)
 
    
     args = parser.parse_args()
     config = vars(args)
 
     start_time_str = datetime.today().strftime('%d-%m-%Y_%H-%M-%S')
-    logdir = f"logs/{start_time_str}_{config['model']}/"
+    logdir = f"logs/{start_time_str}_{config['model']}_{config['clusters']}/"
     os.mkdir(logdir)
     os.mkdir(logdir + "plots/") 
 
