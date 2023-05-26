@@ -34,8 +34,9 @@ def plot_separate(predictions, series_clusters):
         for component, location_id in zip(components, locations):
             fig, axs = plt.subplots(1, 1, figsize=(14, 6))
             forecast = forecast_cluster.univariate_component(component)
-            actual = series_cluster.univariate_component(component)[forecast_cluster.time_index]
+            train, actual = series_cluster.univariate_component(component).split_after(forecast_cluster.start_time())
 
+            train.plot(label="Train", ax=axs)
             forecast.plot(label="Forecast", ax=axs)
             actual.plot(label="Actual", ax=axs)
             axs.set_title(f"Forecast Evaluation, location id: {location_id}")
