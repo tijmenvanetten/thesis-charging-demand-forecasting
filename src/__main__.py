@@ -1,7 +1,6 @@
 from data import load_target, load_covariates, split_data
 from models import load_model, evaluate
 from visualization import plot_separate
-from utils import allow_kwargs
 from features.clustering import stack_timeseries
 
 from darts import concatenate
