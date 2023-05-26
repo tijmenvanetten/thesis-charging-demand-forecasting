@@ -1,0 +1,31 @@
+from typing import List 
+from darts.metrics import mse, rmse, mae, mape
+import matplotlib.pyplot as plt
+import numpy as np
+from darts import TimeSeries
+
+
+def evaluate(predictions, series_clusters):
+    results = {}
+    mse_total, rmse_total, mae_total, mape_total  = [], [], [], []
+    for forecast_cluster, series_cluster in zip(predictions, series_clusters):
+        components = forecast_cluster.components
+        locations = forecast_cluster.static_covariates.location_id.values
+        for component, location_id in zip(components, locations):
+            forecast = forecast_cluster.univariate_component(component)
+            actual = series_cluster.univariate_component(component)[forecast_cluster.time_index]
+            mse_total.append(mse(forecast, actual))
+            rmse_total.append(rmse(forecast, actual))
+            mae_total.append(mae(forecast, actual))
+            mape_total.append(mape(forecast, actual))
+
+    mse_total = np.array([mse_total])
+    rmse_total = np.array([rmse_total])
+    mae_total = np.array([mae_total])
+    mape_total = np.array([mape_total])
+
+    results['mape'] = {'mean': np.mean(mape_total), 'std': np.std(mape_total)}
+    results['mse'] = {'mean': np.mean(mse_total), 'std': np.std(mse_total)}
+    results['rmse'] = {'mean': np.mean(rmse_total), 'std': np.std(rmse_total)}
+    results['mae'] = {'mean': np.mean(mae_total), 'std': np.std(mae_total)}
+    return results
