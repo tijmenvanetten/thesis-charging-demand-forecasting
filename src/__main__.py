@@ -10,62 +10,70 @@ from sklearn.preprocessing import MinMaxScaler
 import argparse
 import logging
 import os
+import json
 from typing import Dict
 from datetime import datetime
 
 
-def main(target, covariates, args, logger) -> Dict:
-    """
-    runs experiment
+from typing import Dict
 
+def main(target_data, covariates_data, args, logger) -> Dict:
     """
-    # # custom selection of timeseries
-    target = [series for series in target if len(
-        series) == 1035]
-    # indices = [0, 1, 2, 4, 10, 11, 14, 15, 16, 17, 18, 20]
-    # timeseries = [timeseries[i] for i in indices]
+    Runs an experiment using the provided target and covariates.
 
-    target = target[:args.subset]
+    Args:
+        target_data (List[TimeSeries]): The list of target TimeSeries objects.
+        covariates_data (TimeSeries): The covariates TimeSeries object.
+        args: The arguments for the experiment.
+        logger: The logger object for logging messages.
+
+    Returns:
+        Dict: A dictionary containing the predictions and figures generated during the experiment.
+
+    Example:
+        >>> target_data = [series1, series2, ...]
+        >>> covariates_data = covariates_series
+        >>> args = ...
+        >>> logger = ...
+        >>> results = main(target_data, covariates_data, args, logger)
+    """
+    target_series = [series for series in target_data if len(series) == 1035]
+    target_series = target_series[:args.subset]
+
     if args.train_global:
-        # timeseries = [stack_timeseries(timeseries)]
-        target = [concatenate(target, axis=1)]
-        # timeseries = [timeseries.univariate_component(component) for component in timeseries.components]
-        
-    # Traing and evaluate per timeseries
+        # Concatenate target series along the axis=1
+        target_series = [concatenate(target_series, axis=1)]
+
     predictions = []
-    for series in target:
-        train, val, test = split_data(series, args.train_split, args.val_split)
+    for target_series_single in target_series:
+        train, val, test = split_data(target_series_single, args.train_split, args.val_split)
+
         if args.use_covariates:
             covariates_train, covariates_val, covariates_test = split_data(
-            covariates, args.train_split, args.val_split)
-            # align covariates to target
-            covariates = covariates[series.time_index]
+                covariates_data, args.train_split, args.val_split)
+            covariates_data = covariates_data[target_series_single.time_index]
 
-        # scale data
         if args.scale:
-            # scale training data
             target_scaler = Scaler(MinMaxScaler())
             train = target_scaler.fit_transform(train)
             val = target_scaler.transform(val)
-            series = target_scaler.transform(series)
+            target_series_single = target_scaler.transform(target_series_single)
 
             if args.use_covariates:
                 covariates_scaler = Scaler(MinMaxScaler())
                 covariates_train = covariates_scaler.fit_transform(
                     covariates_train)
                 covariates_val = covariates_scaler.transform(covariates_val)
-                covariates = covariates_scaler.transform(covariates)
+                covariates_data = covariates_scaler.transform(covariates_data)
 
-        # load model
         print("Loading New model")
         model = load_model(args)
 
-        # train model on training data
         train_args, eval_args = {}, {}
         if args.use_covariates:
-            train_args['past_covariates'] = covariates, 
-            train_args['val_past_covariates'] = covariates
-            eval_args['past_covariates'] = covariates
+            train_args['past_covariates'] = covariates_data,
+            train_args['val_past_covariates'] = covariates_data
+            eval_args['past_covariates'] = covariates_data
         if args.use_val:
             train_args['val_series'] = val
         if args.retrain:
@@ -77,12 +85,9 @@ def main(target, covariates, args, logger) -> Dict:
             series=train,
             **train_args
         )
-        
-        # Set number of epochs to train as hyperparameter from training
-        # model.n_epochs = model.epochs_trained
 
         backtest = model.historical_forecasts(
-            series=series,
+            series=target_series_single,
             num_samples=args.num_samples,
             start=test.start_time(),
             forecast_horizon=args.forecast_horizon,
@@ -93,17 +98,14 @@ def main(target, covariates, args, logger) -> Dict:
         prediction = target_scaler.inverse_transform(backtest)
         predictions.append(prediction)
 
-    logger.info(f"Finished training")
-    # Log Metrics
-    scores = evaluate(predictions, target)
-    logger.info(f"results: {scores}")
+    evaluation_results = evaluate(predictions, target_series)
 
-    # Save Forecast plot
-    figs = plot_separate(predictions, target)
-    for idx, fig in figs.items():
+    forecast_plots = plot_separate(predictions, target_series)
+    for idx, fig in forecast_plots.items():
         fig.savefig(args.logdir + "plots/" + f"{idx=}.png")
 
-    return predictions, figs
+    return evaluation_results, predictions, forecast_plots
+
 
 if __name__ == "__main__":
 
@@ -133,20 +135,32 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    start_time_str = datetime.today().strftime('%d-%m-%Y, %H-%M')
-    args.logdir = f"logs/{args.model=}_{args.train_global=}_{args.use_covariates=}_{args.retrain=}/"
-    if not os.path.exists(args.logdir):
-        os.mkdir(args.logdir)
-        os.mkdir(args.logdir + "plots/")
+    start_time_str = datetime.today().strftime('%d-%m-%Y, %H:%M:%S')
+    log_folder = f"{args.model}/Global={args.train_global}, Covariates={args.use_covariates}, Retrain={args.retrain}"
+    args.logdir = f"logs/{log_folder}/{start_time_str}/"
+    os.makedirs(args.logdir, exist_ok=True)
+    os.makedirs(args.logdir + "plots/", exist_ok=True)
 
+    # Main logger for general logging
     logging.basicConfig(filename=args.logdir + "logs.log",
                         encoding='utf-8', level=logging.INFO)
     logger = logging.getLogger(__name__)
-
+    
+    # Separate logger for parameters and results only
+    results_logger = logging.getLogger("results_logger")
+    results_logger.setLevel(logging.INFO)
+    results_handler = logging.FileHandler(args.logdir + "results.log")
+    results_logger.addHandler(results_handler)
+    
     # Load Data
     dataset = data_handler(args.dataset, args.use_static_cols)
     target_series = dataset.get('target')
     covariates = dataset.get('covariates')
 
+    # Run Experiments
     logger.info(f"{start_time_str}: Running Experiments, params: {args}")
-    main(target_series, covariates, args, logger)
+    evaluation_results, predictions, forecast_plots = main(target_series, covariates, args, logger)
+
+    # Log Results
+    results_string = json.dumps(evaluation_results, indent=4)
+    results_logger.info(f"Results: {results_string}")
