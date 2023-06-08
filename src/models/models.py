@@ -11,7 +11,16 @@ encoders = {
             'transformer': Scaler()
         }
 
-def load_earlystopper():
+def load_earlystopper() -> EarlyStopping:
+    """
+    Loads and returns an instance of the EarlyStopping callback.
+
+    Returns:
+        EarlyStopping: An instance of the EarlyStopping callback.
+
+    Example:
+        >>> earlystopper = load_earlystopper()
+    """
     return EarlyStopping(
         monitor="val_loss",
         patience=10,
@@ -20,24 +29,41 @@ def load_earlystopper():
     )
 
 def load_model(args):
+    """
+    Loads and returns a specific model based on the provided arguments.
+
+    Args:
+        args: The arguments specifying the model to be loaded.
+
+    Returns:
+        The loaded model.
+
+    Raises:
+        ValueError: If the specified model is not found.
+
+    Example:
+        >>> model_args = ...
+        >>> model = load_model(model_args)
+    """
     if args.model == 'TFT':
-       return load_tftmodel(args)
-    if args.model == 'TCN':
+        return load_tftmodel(args)
+    elif args.model == 'TCN':
         return load_tcnmodel(args)
-    if args.model == 'NBEATS':
+    elif args.model == 'NBEATS':
         return load_nbeatsmodel(args)
-    if args.model == 'XGB':
+    elif args.model == 'XGB':
         return load_xgbmodel(args)
-    if args.model == 'ARIMA':
+    elif args.model == 'ARIMA':
         return load_arimamodel(args)
-    if args.model == 'VARIMA':
+    elif args.model == 'VARIMA':
         return load_varimamodel(args)
-    if args.model == 'NaiveMean':
+    elif args.model == 'NaiveMean':
         return load_naivemean(args)
-    if args.model == 'DeepAR':
+    elif args.model == 'DeepAR':
         return load_deepar(args)
     else:
-        raise "Could not find specified model"
+        raise ValueError("Could not find specified model.")
+
 
 def load_deepar(args):
     from darts.models import RNNModel
