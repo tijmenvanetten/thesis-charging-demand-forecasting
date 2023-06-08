@@ -62,49 +62,7 @@ def split_data(series, train_split, val_split):
     train, val, test = series[:train_idx], series[train_idx:val_idx], series[val_idx:]
     return train, val, test
 
-def data_handler(dataset:str, use_static_cols=None):
-    if dataset == 'palo_alto':
-        path = 'C:/Users/tijmen.vanetten/Documents/emobility-vanetten/data/03_processed/palo_alto_dataset.csv'
-        time_col = 'date'
-        static_cols=None
-        covariates = None
-        freq = 'D'
-    elif dataset == 'shell':
-        path = 'C:/Users/tijmen.vanetten/Documents/emobility-vanetten/data/03_processed/shell_dataset.csv'
-        # static_cols= ['num_evse'] if use_static_cols else None,
-        covariates = load_covariates(
-            path='data/03_processed/weather_ecad.csv',
-            value_cols=['temp_max', 'temp_min', 'sunshine', 'precip'],
-            freq='D'
-        )
-        static_cols = None
-        time_col = 'date'
-        freq = 'D'
-    elif dataset == 'boulder':
-        path = 'C:/Users/tijmen.vanetten/Documents/emobility-vanetten/data/03_processed/boulder_dataset.csv'
-        time_col = 'date'
-        static_cols=None
-        covariates = None
-        freq = 'D'
-    elif dataset == 'shell_weekly':
-        path = 'C:/Users/tijmen.vanetten/Documents/emobility-vanetten/data/03_processed/shell_dataset_weekly.csv'
-        time_col = 'week'
-        static_cols=None
-        covariates = None
-        freq = 'W-MON'
-    else:
-        raise "Dataset not found"
 
-    target_series = load_target(
-        path=path,
-        time_col=time_col,
-        static_cols=static_cols,
-        freq=freq
-    )
-    dataset = {}
-    dataset['target'] = target_series 
-    dataset['covariates'] = covariates
-    return dataset
 
 if __name__ == "__main__":
     target = load_target('../data/01_raw/ChargePoint Data CY20Q4.csv', group_cols='Station Name',

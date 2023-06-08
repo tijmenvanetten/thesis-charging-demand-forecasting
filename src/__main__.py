@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    start_time_str = datetime.today().strftime('%d-%m-%Y_%H-%M-%S')
+    start_time_str = datetime.today().strftime('%d-%m-%Y, %H-%M')
     args.logdir = f"logs/{args.model=}_{args.train_global=}_{args.use_covariates=}_{args.retrain=}/"
     if not os.path.exists(args.logdir):
         os.mkdir(args.logdir)
@@ -148,5 +148,5 @@ if __name__ == "__main__":
     target_series = dataset.get('target')
     covariates = dataset.get('covariates')
 
-    logger.info(f"Running Experiments, params: {args}")
+    logger.info(f"{start_time_str}: Running Experiments, params: {args}")
     main(target_series, covariates, args, logger)
