@@ -14,26 +14,26 @@ from typing import Dict
 from datetime import datetime
 
 
-def main(timeseries, covariates, args, logger) -> Dict:
+def main(target, covariates, args, logger) -> Dict:
     """
     runs experiment
 
     """
     # # custom selection of timeseries
-    timeseries = [series for series in target_series if len(
+    target = [series for series in target if len(
         series) == 1035]
     # indices = [0, 1, 2, 4, 10, 11, 14, 15, 16, 17, 18, 20]
     # timeseries = [timeseries[i] for i in indices]
 
-    timeseries = timeseries[:args.subset]
+    target = target[:args.subset]
     if args.train_global:
         # timeseries = [stack_timeseries(timeseries)]
-        timeseries = [concatenate(timeseries, axis=1)]
+        target = [concatenate(target, axis=1)]
         # timeseries = [timeseries.univariate_component(component) for component in timeseries.components]
         
     # Traing and evaluate per timeseries
     predictions = []
-    for series in timeseries:
+    for series in target:
         train, val, test = split_data(series, args.train_split, args.val_split)
         if args.use_covariates:
             covariates_train, covariates_val, covariates_test = split_data(
@@ -95,11 +95,11 @@ def main(timeseries, covariates, args, logger) -> Dict:
 
     logger.info(f"Finished training")
     # Log Metrics
-    scores = evaluate(predictions, timeseries)
+    scores = evaluate(predictions, target)
     logger.info(f"results: {scores}")
 
     # Save Forecast plot
-    figs = plot_separate(predictions, timeseries)
+    figs = plot_separate(predictions, target)
     for idx, fig in figs.items():
         fig.savefig(args.logdir + "plots/" + f"{idx=}.png")
 
