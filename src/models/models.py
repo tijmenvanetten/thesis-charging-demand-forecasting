@@ -76,7 +76,7 @@ def load_deepar(args):
         # add_encoders=encoders,
         # optimizer_kwargs={'lr': 0.0007}, 
         nr_epochs_val_period=1,
-        log_tensorboard=args.logdir,
+        # log_tensorboard=args.logdir,
         input_chunk_length=30,
         random_state=0,
         likelihood=GaussianLikelihood(),
