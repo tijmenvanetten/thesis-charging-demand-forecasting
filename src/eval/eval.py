@@ -10,8 +10,7 @@ def evaluate(predictions, series_clusters):
     mse_total, rmse_total, mae_total, mape_total  = [], [], [], []
     for forecast_cluster, series_cluster in zip(predictions, series_clusters):
         components = forecast_cluster.components
-        locations = forecast_cluster.static_covariates.location_id.values
-        for component, location_id in zip(components, locations):
+        for component in components:
             forecast = forecast_cluster.univariate_component(component)
             actual = series_cluster.univariate_component(component)[forecast_cluster.time_index]
             mse_total.append(mse(forecast, actual))

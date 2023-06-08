@@ -26,8 +26,10 @@ def transform_datetime(df: pd.DataFrame, date_col='session_start') -> pd.DataFra
     Returns:
         Pandas DataFrame representing the processed session data.
     """
-    df[date_col] = pd.to_datetime(df[date_col])
-    df['date'] = df[date_col].dt.date
+    df['date'] = pd.to_datetime(df[date_col])
+    df['year'] = df['date'].dt.to_period('Y').dt.start_time
+    df['week'] = df['date'].dt.to_period('W').dt.start_time
+    df['month'] = df['date'].dt.to_period('M').dt.start_time
     return df
 
 

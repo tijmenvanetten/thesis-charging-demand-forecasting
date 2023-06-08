@@ -1,1 +1,1 @@
-from .visualize import plot, plot_separate
+from .visualize import plot, plot_separate, plot_series

@@ -11,7 +11,7 @@ def plot(predictions, series_clusters):
     idx = 0
     for forecast_cluster, series_cluster in zip(predictions, series_clusters):
         components = forecast_cluster.components
-        locations = forecast_cluster.static_covariates.location_id.values
+        locations = forecast_cluster.static_covariates.station_id.values
         for component, location_id in zip(components, locations):
             forecast = forecast_cluster.univariate_component(component)
             actual = series_cluster.univariate_component(component)[forecast_cluster.time_index]
@@ -25,21 +25,39 @@ def plot(predictions, series_clusters):
 
     return fig, axs
 
-def plot_separate(predictions, series_clusters):
+def plot_separate(predictions, actuals):
     idx = 0
     figs = {}
-    for forecast_cluster, series_cluster in zip(predictions, series_clusters):
-        components = forecast_cluster.components
-        locations = forecast_cluster.static_covariates.location_id.values
-        for component, location_id in zip(components, locations):
+    for prediction, actual in zip(predictions, actuals):
+        for component in prediction.components:
             fig, axs = plt.subplots(1, 1, figsize=(14, 6))
-            forecast = forecast_cluster.univariate_component(component)
-            train, actual = series_cluster.univariate_component(component).split_after(forecast_cluster.start_time())
+            forecast = prediction.univariate_component(component)
+            train, test = actual.univariate_component(component).split_after(prediction.start_time())
 
-            train.plot(label="Train", ax=axs)
+            # train.plot(label="Train", ax=axs)
             forecast.plot(label="Forecast", ax=axs)
-            actual.plot(label="Actual", ax=axs)
-            axs.set_title(f"Forecast Evaluation, location id: {location_id}")
+            test.plot(label="Actual", ax=axs)
+            axs.set_title(f"Forecast Evaluation - {idx=}")
             idx += 1
-            figs[location_id] = fig 
+            figs[idx] = fig 
     return figs
+
+def plot_series(series_list, cols=1):
+    rows = round(len(series_list) / cols)
+    fig, axs = plt.subplots(rows, cols, figsize=(14, 6 * rows))
+    axs = axs.flatten()
+    for idx, series in enumerate(series_list):
+        series.plot(ax=axs[idx])
+        axs[idx].set_title(f"Delivered Energy (kWH) over time - {idx=}")
+    fig.tight_layout()
+    return fig, axs
+
+if __name__ == "__main__":
+    from data.data import load_target
+    target_series = load_target(
+        path='data/03_processed/shell_dataset_weekly.csv',
+        time_col='week',
+        freq='W'
+    )
+    for series in target_series:
+        plot()
