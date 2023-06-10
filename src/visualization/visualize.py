@@ -1,63 +1,50 @@
+import seaborn as sns
 import matplotlib.pyplot as plt
 
-def plot(predictions, series_clusters):
-    if len(predictions) == 1:
-        rows = len(predictions[0].components)
-    else:
-        rows = len(predictions)
-    cols=1
+def plot_time_series_predictions(predictions_dict):
+    sns.set_style("whitegrid")
+    colors = sns.color_palette("Set1", len(predictions_dict))
+    line_styles = ['-', '--', ':']  # Different line styles for each model
+    line_widths = [1.5, 2.0, 1.0]  # Different line widths for each model
 
-    fig, axs = plt.subplots(rows, cols, figsize=(14, 6 * rows))
-    idx = 0
-    for forecast_cluster, series_cluster in zip(predictions, series_clusters):
-        components = forecast_cluster.components
-        locations = forecast_cluster.static_covariates.station_id.values
-        for component, location_id in zip(components, locations):
-            forecast = forecast_cluster.univariate_component(component)
-            actual = series_cluster.univariate_component(component)[forecast_cluster.time_index]
+    # Calculate the number of rows and columns for subplots
+    num_plots = list(predictions_dict.values())[0].n_components
 
-            forecast.plot(label="Forecast", ax=axs[idx])
-            forecast.plot(low_quantile=0.05, high_quantile=0.95, label="5th and 95th percentiles", ax=axs[idx])
-            actual.plot(label="Actual", ax=axs[idx])
-            axs[idx].set_title(f"Forecast Evaluation, location id: {location_id}")
-            axs[idx].legend(loc="upper left")
-            idx += 1
+    # Iterate over the forecast horizons
+    for horizon, forecast_dict in predictions_dict.items():
+        # Create a figure and subplots
+        fig, axs = plt.subplots(num_plots, 1, figsize=(20, 6 * num_plots))
 
-    return fig, axs
+        # Flatten the subplots array if necessary
+        if num_plots == 1:
+            axs = [axs]
 
-def plot_separate(predictions, actuals):
-    idx = 0
-    figs = {}
-    for prediction, actual in zip(predictions, actuals):
-        for component in prediction.components:
-            fig, axs = plt.subplots(1, 1, figsize=(14, 6))
-            forecast = prediction.univariate_component(component)
-            train, test = actual.univariate_component(component).split_after(prediction.start_time())
+        # Iterate over the models and their predictions
+        for i, (model, predictions) in enumerate(forecast_dict.items()):
+            # Generate x values
+            x = range(len(predictions[0]))
 
-            # train.plot(label="Train", ax=axs)
-            forecast.plot(label="Forecast", ax=axs)
-            test.plot(label="Actual", ax=axs)
-            axs.set_title(f"Forecast Evaluation - {idx=}")
-            idx += 1
-            figs[idx] = fig 
-    return figs
+            # Iterate over predictions and plot each time series separately
+            for j in range(predictions.n_components):
+                time_series = predictions.univariate_component(j)
+                x = time_series.time_index
+                # Plot the time series line with different styles
+                axs[j].plot(x, time_series.values(), color=colors[i], linestyle=line_styles[i % len(line_styles)],
+                            linewidth=line_widths[i % len(line_widths)], label=f"{model}")
 
-def plot_series(series_list, cols=1):
-    rows = round(len(series_list) / cols)
-    fig, axs = plt.subplots(rows, cols, figsize=(14, 6 * rows))
-    axs = axs.flatten()
-    for idx, series in enumerate(series_list):
-        series.plot(ax=axs[idx])
-        axs[idx].set_title(f"Delivered Energy (kWH) over time - {idx=}")
-    fig.tight_layout()
-    return fig, axs
+                # Plot points on the line indicating the predictions
+                axs[j].scatter(x, time_series.values(), color=colors[i], marker='o', s=5, label=None)
 
-if __name__ == "__main__":
-    from data.data import load_target
-    target_series = load_target(
-        path='data/03_processed/shell_dataset_weekly.csv',
-        time_col='week',
-        freq='W'
-    )
-    for series in target_series:
-        plot()
+                # Set labels and title for each subplot
+                axs[j].set_xlabel('Time')
+                axs[j].set_ylabel('Daily Energy Delivery Demand (kWh)')
+                axs[j].set_title(f'Charging Station Forecasts (Horizon: {horizon})')
+
+                # Show legend for each subplot
+                axs[j].legend()
+
+        # Adjust spacing between subplots
+        # plt.tight_layout()
+
+        # Display the plot
+        plt.show()

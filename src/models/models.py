@@ -23,12 +23,12 @@ def load_earlystopper() -> EarlyStopping:
     """
     return EarlyStopping(
         monitor="val_loss",
-        patience=10,
+        patience=5,
         min_delta=0.01,
         mode='min',
     )
 
-def load_model(args):
+def load_model(model, forecast_horizon, logdir):
     """
     Loads and returns a specific model based on the provided arguments.
 
@@ -45,27 +45,27 @@ def load_model(args):
         >>> model_args = ...
         >>> model = load_model(model_args)
     """
-    if args.model == 'TFT':
-        return load_tftmodel(args)
-    elif args.model == 'TCN':
-        return load_tcnmodel(args)
-    elif args.model == 'NBEATS':
-        return load_nbeatsmodel(args)
-    elif args.model == 'XGB':
-        return load_xgbmodel(args)
-    elif args.model == 'ARIMA':
-        return load_arimamodel(args)
-    elif args.model == 'VARIMA':
-        return load_varimamodel(args)
-    elif args.model == 'NaiveMean':
-        return load_naivemean(args)
-    elif args.model == 'DeepAR':
-        return load_deepar(args)
+    if model == 'TFT':
+        return load_tftmodel(forecast_horizon, logdir)
+    elif model == 'TCN':
+        return load_tcnmodel(forecast_horizon, logdir)
+    elif model == 'NBEATS':
+        return load_nbeatsmodel(forecast_horizon, logdir)
+    elif model == 'XGB':
+        return load_xgbmodel(forecast_horizon, logdir)
+    elif model == 'ARIMA':
+        return load_arimamodel(forecast_horizon, logdir)
+    elif model == 'VARIMA':
+        return load_varimamodel(forecast_horizon, logdir)
+    elif model == 'NaiveMean':
+        return load_naivemean(forecast_horizon, logdir)
+    elif model == 'DeepAR':
+        return load_deepar(forecast_horizon, logdir)
     else:
         raise ValueError("Could not find specified model.")
 
 
-def load_deepar(args):
+def load_deepar(forecast_horizon, logdir):
     from darts.models import RNNModel
     return RNNModel(
         model="LSTM",
@@ -76,18 +76,19 @@ def load_deepar(args):
         # add_encoders=encoders,
         # optimizer_kwargs={'lr': 0.0007}, 
         nr_epochs_val_period=1,
-        # log_tensorboard=args.logdir,
+        # log_tensorboard=logdir,
         input_chunk_length=30,
+        output_chunk_length=forecast_horizon,
         random_state=0,
         likelihood=GaussianLikelihood(),
         pl_trainer_kwargs={"callbacks": [load_earlystopper()]}
     )
 
-def load_tcnmodel(args):
+def load_tcnmodel(forecast_horizon, logdir):
     from darts.models import TCNModel
     return TCNModel(
         input_chunk_length=30,
-        output_chunk_length=args.forecast_horizon,
+        output_chunk_length=forecast_horizon,
         batch_size=16,
 
         num_layers=1,
@@ -108,11 +109,11 @@ def load_tcnmodel(args):
         n_epochs=20,
        
         random_state=0,
-        work_dir=args.logdir + "/darts_logs/",
-        pl_trainer_kwargs={"callbacks": [load_earlystopper()], "log_every_n_steps": 1} if not args.retrain else None,
+        work_dir=logdir + "/darts_logs/",
+        pl_trainer_kwargs={"callbacks": [load_earlystopper()], "log_every_n_steps": 1},
     )
 
-def load_tftmodel(args):
+def load_tftmodel(forecast_horizon, logdir):
     from darts.models import TFTModel
     return TFTModel(
         # hidden_size=256, 
@@ -123,9 +124,9 @@ def load_tftmodel(args):
         # optimizer_kwargs={'lr': 2e-3}, 
         nr_epochs_val_period=1,
         # log_tensorboard=True,
-        work_dir=args.logdir + "/darts_logs/",
+        work_dir=logdir + "/darts_logs/",
         input_chunk_length=30,
-        output_chunk_length=args.forecast_horizon,
+        output_chunk_length=forecast_horizon,
         random_state=0,
         likelihood=None,
         loss_fn=torch.nn.MSELoss(),
@@ -133,11 +134,11 @@ def load_tftmodel(args):
         add_relative_index=True,
     )
 
-def load_nbeatsmodel(args):
+def load_nbeatsmodel(forecast_horizon, logdir):
     from darts.models import NBEATSModel
     return NBEATSModel(
         input_chunk_length=30,
-        output_chunk_length=args.forecast_horizon,
+        output_chunk_length=forecast_horizon,
         batch_size=16,
         generic_architecture=False,
         nr_epochs_val_period=1,
@@ -151,22 +152,22 @@ def load_nbeatsmodel(args):
         add_encoders=encoders,
         likelihood=None,
         loss_fn=torch.nn.MSELoss(),
-        pl_trainer_kwargs={"callbacks": [load_earlystopper()], "log_every_n_steps": 1} if not args.retrain else None,
+        pl_trainer_kwargs={"callbacks": [load_earlystopper()], "log_every_n_steps": 1},
         model_name="nbeats_model",
-        work_dir=args.logdir + "/darts_logs/",
+        work_dir=logdir + "/darts_logs/",
     )
 
-def load_xgbmodel(args):
+def load_xgbmodel(forecast_horizon, logdir):
     from darts.models import XGBModel
     return XGBModel(
         lags=30,
         lags_past_covariates=30,
-        output_chunk_length=args.forecast_horizon,
+        output_chunk_length=forecast_horizon,
         add_encoders=encoders,
         use_static_covariates=True,
     )
 
-def load_arimamodel(args):
+def load_arimamodel(forecast_horizon, logdir):
     from darts.models import ARIMA
     return ARIMA(
         p=30,
@@ -175,12 +176,12 @@ def load_arimamodel(args):
     )
 
 
-def load_varimamodel(args):
+def load_varimamodel(forecast_horizon, logdir):
     from darts.models import VARIMA
     return VARIMA(
         
     )
 
-def load_naivemean(args):
+def load_naivemean(forecast_horizon, logdir):
     from darts.models import NaiveMean
     return NaiveMean()
