@@ -32,7 +32,9 @@ def preprocess():
         "tn": "temp_min",
         "tx": "temp_max"
     })
-    df[['date', 'precip', 'sunshine', 'temp_avg', 'temp_min', 'temp_max']].to_csv("data/03_model_input/weather_ecad.csv")
+    # Load Last 10 years
+    df = df.iloc[-3650:].reset_index(drop=True)
+    df[['date', 'precip', 'sunshine', 'temp_avg', 'temp_min', 'temp_max']].to_csv("C:/Users/tijmen.vanetten/Documents/emobility-vanetten/data/03_processed/weather_ecad.csv")
 
 if __name__ == "__main__":
     preprocess()

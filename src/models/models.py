@@ -2,15 +2,14 @@ from darts.utils.likelihood_models import GaussianLikelihood
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from darts.dataprocessing.transformers.scaler import Scaler
 import torch 
+from darts.utils.timeseries_generation import holidays_timeseries
 
-encoders = {
-            'cyclic': {'future': ['day']},
-            'datetime_attribute': {'future': ['day', 'weekday', 'dayofweek']},
-            'position': {'past': ['relative'], 'future': ['relative']},
-            'custom': {'past': [lambda idx: (idx.year - 1950) / 50]},
-            'transformer': Scaler()
-        }
-
+add_encoders = {
+    'cyclic': {'future': ['month']},
+    'datetime_attribute': {'future': ['dayofweek', 'weekday']},
+    'position': {'past': ['relative'], 'future': ['relative']},
+    'custom': {'past': [lambda idx: (idx.year - 1950) / 50]},
+}
 def load_earlystopper() -> EarlyStopping:
     """
     Loads and returns an instance of the EarlyStopping callback.

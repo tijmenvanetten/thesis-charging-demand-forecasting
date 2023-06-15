@@ -1,6 +1,10 @@
 data/
 .vscode/
 !src/data/
+models/
+models/*
+*.png
+results.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

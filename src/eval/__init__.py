@@ -1,1 +1,1 @@
-from .eval import evaluate
+from .eval import evaluate, print_metrics_table

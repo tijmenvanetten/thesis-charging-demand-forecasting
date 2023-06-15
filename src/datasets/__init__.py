@@ -1,1 +1,1 @@
-from .datasets import PaloAltoDataset, ShellDataset, BoulderDataset
+from .datasets import PaloAltoDataset, ShellDataset, BoulderDataset, WeatherEcadDataset

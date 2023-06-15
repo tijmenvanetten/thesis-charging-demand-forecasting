@@ -1,50 +1,70 @@
-from typing import List 
-from darts.metrics import mse, rmse, mae, mape
-import matplotlib.pyplot as plt
-import numpy as np
+from typing import Dict, List
+from darts.metrics import mape, rmse, mse, mae
 from darts import TimeSeries
-
-
 import numpy as np
 
-def evaluate(predictions, series_clusters):
+def evaluate(predictions: List[TimeSeries], actuals: List[TimeSeries]) -> Dict[str, float]:
     """
-    Evaluates the predictions against the actual values in the series clusters and returns the evaluation results.
+    Evaluate the performance of predictions against actuals using weighted metrics.
 
     Args:
-        predictions (List[Forecast]): A list of Forecast objects containing the predicted values.
-        series_clusters (List[TimeSeries]): A list of TimeSeries objects representing the series clusters.
+        predictions (List[TimeSeries]): List of predicted TimeSeries objects.
+        actuals (List[TimeSeries]): List of actual TimeSeries objects.
 
     Returns:
-        dict: A dictionary containing the evaluation results, including mean and standard deviation for each metric.
-
-    Example:
-        >>> preds = [forecast1, forecast2, ...]
-        >>> clusters = [series_cluster1, series_cluster2, ...]
-        >>> evaluation_results = evaluate(preds, clusters)
+        Dict[str, float]: A dictionary containing weighted MAPE, RMSE, MSE, and MAE metrics.
     """
-    results = {}
-    mse_total, rmse_total, mae_total, mape_total = [], [], [], []
+    # Calculate individual metrics for each prediction-actual pair
+    mape_values = mape(predictions, actuals)
+    rmse_values = rmse(predictions, actuals)
+    mse_values = mse(predictions, actuals)
+    mae_values = mae(predictions, actuals)
 
-    for forecast_cluster, series_cluster in zip(predictions, series_clusters):
-        components = forecast_cluster.components
+    # Calculate weights based on the length of actuals
+    total_length = sum(len(actual) for actual in actuals)
+    weights = [len(actual) / total_length for actual in actuals]
 
-        for component in components:
-            forecast = forecast_cluster.univariate_component(component)
-            actual = series_cluster.univariate_component(component)[forecast_cluster.time_index]
-            mse_total.append(mse(forecast, actual))
-            rmse_total.append(rmse(forecast, actual))
-            mae_total.append(mae(forecast, actual))
-            mape_total.append(mape(forecast, actual))
+    # Calculate weighted mean of metrics using the weights
+    mape_value = np.average(mape_values, weights=weights)
+    rmse_value = np.average(rmse_values, weights=weights)
+    mse_value = np.average(mse_values, weights=weights)
+    mae_value = np.average(mae_values, weights=weights)
 
-    mse_total = np.array(mse_total)
-    rmse_total = np.array(rmse_total)
-    mae_total = np.array(mae_total)
-    mape_total = np.array(mape_total)
+    # Create a dictionary with the weighted metrics
+    weighted_metrics = {
+        'MAPE': mape_value,
+        'RMSE': rmse_value,
+        'MSE': mse_value,
+        'MAE': mae_value
+    }
 
-    results['mape'] = {'mean': np.mean(mape_total), 'std': np.std(mape_total)}
-    results['mse'] = {'mean': np.mean(mse_total), 'std': np.std(mse_total)}
-    results['rmse'] = {'mean': np.mean(rmse_total), 'std': np.std(rmse_total)}
-    results['mae'] = {'mean': np.mean(mae_total), 'std': np.std(mae_total)}
+    return weighted_metrics
 
-    return results
+
+def print_metrics_table(predictions_dict: Dict[str, List[TimeSeries]], actuals: List[TimeSeries]):
+    """
+    Prints the metrics for each model in a nice aligned table format.
+
+    Args:
+        predictions_dict (Dict[str, List[TimeSeries]]): Dictionary with model names as keys and predictions as values.
+        actuals (List[TimeSeries]): List of actual TimeSeries objects.
+    """
+    # Calculate metrics for each model's predictions
+    metrics = []
+    metrics_keys = ['MAPE', 'RMSE', 'MSE', 'MAE']
+    for model, predictions in predictions_dict.items():
+        weighted_metrics = evaluate(predictions, actuals)
+        metric_row = [model] + [weighted_metrics[key] for key in metrics_keys]
+        metrics.append(metric_row)
+
+    # Define table format
+    table_format = "{:<15}" + "{:<10}" * (len(metrics_keys) + 1)
+
+    # Print table headers
+    header = ["Model"] + metrics_keys
+    print(table_format.format(*header))
+    print("-" * (15 + 10 * (len(metrics_keys) + 1)))
+
+    # Print metrics table
+    for metric_row in metrics:
+        print(table_format.format(*metric_row))
