@@ -30,9 +30,16 @@ def evaluate(predictions: List[TimeSeries], actuals: List[TimeSeries]) -> Dict[s
     mse_value = np.average(mse_values, weights=weights)
     mae_value = np.average(mae_values, weights=weights)
 
+    # Round values to 2 decimal places
+    mape_value = round(mape_value, 2)
+    rmse_value = round(rmse_value, 2)
+    mse_value = round(mse_value, 2)
+    mae_value = round(mae_value, 2)
+
     # Create a dictionary with the weighted metrics
     weighted_metrics = {
         'RMSE': rmse_value,
+        'MSE': mse_value,
         'MAE': mae_value,
         'MAPE': mape_value,
     }
