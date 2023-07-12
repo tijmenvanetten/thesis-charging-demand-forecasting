@@ -1,0 +1,57 @@
+Here is the rounded data up to two decimals:
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=600, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 93.56, 'MAE': 74.74, 'MAPE': 35.29}
+Model: NHiTS (Global) {'RMSE': 90.53, 'MAE': 71.90, 'MAPE': 45.11}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=570, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 94.18, 'MAE': 74.96, 'MAPE': 35.13}
+Model: NHiTS (Global) {'RMSE': 87.25, 'MAE': 68.88, 'MAPE': 30.95}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=540, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 92.93, 'MAE': 73.79, 'MAPE': 36.91}
+Model: NHiTS (Global) {'RMSE': 87.17, 'MAE': 68.95, 'MAPE': 36.71}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=510, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 92.77, 'MAE': 73.86, 'MAPE': 33.98}
+Model: NHiTS (Global) {'RMSE': 86.01, 'MAE': 68.17, 'MAPE': 43.61}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=480, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 92.92, 'MAE': 74.12, 'MAPE': 35.62}
+Model: NHiTS (Global) {'RMSE': 86.66, 'MAE': 68.16, 'MAPE': 49.26}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=450, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 93.58, 'MAE': 74.38, 'MAPE': 51.05}
+Model: NHiTS (Global) {'RMSE': 86.18, 'MAE': 68.02, 'MAPE': 44.02}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=420, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 96.87, 'MAE': 78.32, 'MAPE': 41.54}
+Model: NHiTS (Global) {'RMSE': 85.85, 'MAE': 68.10, 'MAPE': 31.41}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=390, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 98.63, 'MAE': 79.38, 'MAPE': 39.30}
+Model: NHiTS (Global) {'RMSE': 88.79, 'MAE': 69.86, 'MAPE': 34.79}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=360, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 96.33, 'MAE': 77.41, 'MAPE': 35.58}
+Model: NHiTS (Global) {'RMSE': 85.00, 'MAE': 67.10, 'MAPE': 34.57}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=330, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 95.15, 'MAE': 79.29, 'MAPE': 36.24}
+Model: NHiTS (Global) {'RMSE': 94.60, 'MAE': 67.91, 'MAPE': 154.61}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=300, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 96.07, 'MAE': 77.22, 'MAPE': 45.78}
+Model: NHiTS (Global) {'RMSE': 87.80, 'MAE': 69.14, 'MAPE': 54.56}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=270, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 97.53, 'MAE': 78.53, 'MAPE': 35.74}
+Model: NHiTS (Global) {'RMSE': 87.04, 'MAE': 68.08, 'MAPE': 41.04}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=240, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 101.56, 'MAE': 82.77, 'MAPE': 38.62}
+Model: NHiTS (Global) {'RMSE': 91.01, 'MAE': 72.01, 'MAPE': 33.08}
+
+USE_COVARIATES=False, FORECAST_HORIZON=1, INPUT_CHUNK_LENGTH=30, TRAIN_DATA=600, TEST_DATA=90, TRAIN_LENGTH=210, ShellDataset, len(series['train'])=34, len(series['test'])=34)
+Model: NHiTS (Local) {'RMSE': 103.79, 'MAE': 84.41, 'MAPE': 40.90}
+Model: NHiTS (Global) {'RMSE': 86.27, 'MAE': 68.04, 'MAPE': 34.54}
