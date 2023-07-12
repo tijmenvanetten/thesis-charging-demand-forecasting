@@ -101,12 +101,12 @@ class CovariatesDatasetLoader(ABC):
         )
         return covariates
     
-    def from_target_series(self, train_targets, test_targets):
+    def from_series(self, series_trains, series_tests):
         covariates = self.load()
         train_covariates, test_covariates = [], []
-        for train_target_single, test_target_single in zip(train_targets, test_targets):
-            train_covariates.append(covariates[train_target_single.time_index])
-            test_covariates.append(covariates[test_target_single.time_index])
+        for series_train_single, series_test_single in zip(series_trains, series_tests):
+            train_covariates.append(covariates[series_train_single.time_index])
+            test_covariates.append(covariates[series_test_single.time_index])
         return {'train': train_covariates, 'test': test_covariates}
 
 
