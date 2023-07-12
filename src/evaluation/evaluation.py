@@ -32,10 +32,9 @@ def evaluate(predictions: List[TimeSeries], actuals: List[TimeSeries]) -> Dict[s
 
     # Create a dictionary with the weighted metrics
     weighted_metrics = {
-        'MAPE': mape_value,
         'RMSE': rmse_value,
-        'MSE': mse_value,
-        'MAE': mae_value
+        'MAE': mae_value,
+        'MAPE': mape_value,
     }
 
     return weighted_metrics
@@ -51,7 +50,7 @@ def print_metrics_table(predictions_dict: Dict[str, List[TimeSeries]], actuals: 
     """
     # Calculate metrics for each model's predictions
     metrics = []
-    metrics_keys = ['MAPE', 'RMSE', 'MSE', 'MAE']
+    metrics_keys = ['RMSE', 'MAE', 'MAPE']
     for model, predictions in predictions_dict.items():
         weighted_metrics = evaluate(predictions, actuals)
         metric_row = [model] + [weighted_metrics[key] for key in metrics_keys]
