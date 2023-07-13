@@ -48,3 +48,14 @@ class BoulderDataset(TargetDatasetLoader):
             static_cols = None,
             *args, **kwargs
         )
+
+
+def load_dataset(dataset_name):
+    if dataset_name == "boulder":
+        return BoulderDataset()
+    elif dataset_name == "shell":
+        return ShellDataset()
+    elif dataset_name == "paloalto":
+        return PaloAltoDataset()
+    else:
+        raise ValueError("Invalid dataset name")

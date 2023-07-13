@@ -18,7 +18,6 @@ def train_predict(model, series_train, series_test, horizon, train_split=None, r
         series=series,
         start=series_test.start_time(),
         forecast_horizon=horizon,
-        retrain=retrain
     )
     return forecast
 
@@ -43,7 +42,6 @@ def train_predict_past_covariates(model, series_train, series_test, past_covaria
         past_covariates=past_covariates,
         start=series_test.start_time(),
         forecast_horizon=horizon,
-        retrain=retrain
     )
     return forecast
 
@@ -65,7 +63,6 @@ def train_predict_global(model, series_train, series_test, horizon, train_split=
             series=series_single,
             start=series_test_single.start_time(),
             forecast_horizon=horizon,
-            retrain=retrain
         )
 
         predictions.append(forecast)
@@ -104,7 +101,6 @@ def train_predict_global_past_covariates(model, series_train, series_test, past_
             past_covariates=past_covariates_single,
             start=series_test_single.start_time(),
             forecast_horizon=horizon,
-            retrain=retrain
         )
 
         predictions.append(forecast)
