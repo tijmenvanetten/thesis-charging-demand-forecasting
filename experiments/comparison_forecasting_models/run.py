@@ -1,18 +1,21 @@
-from train import train_predict_arima, train_predict_baseline, train_predict_nhits_global, train_predict_transformer, train_predict_nhits_local
-from evaluation import evaluate
-from darts.dataprocessing.transformers.scaler import Scaler
-from datasets import ShellDataset, PaloAltoDataset, BoulderDataset
 import sys
-import os
-import json
-import logging
-import argparse
-from pytorch_lightning.callbacks.early_stopping import EarlyStopping
-from sklearn.preprocessing import MinMaxScaler
-
+import os 
 sys.path.insert(1, os.path.join(sys.path[0], '../../src'))
-logging.getLogger("pytorch_lightning").setLevel(logging.WARNING)
 
+import argparse
+import logging
+import json
+
+from sklearn.preprocessing import MinMaxScaler
+from darts.dataprocessing.transformers.scaler import Scaler
+
+from train import train_predict_arima, train_predict_baseline, train_predict_nhits_global, train_predict_transformer, train_predict_nhits_local
+from features.encoders import past_datetime_encoder
+from evaluation import evaluate
+from datasets import ShellDataset, PaloAltoDataset, BoulderDataset, WeatherEcadDataset
+
+
+logging.getLogger("pytorch_lightning").setLevel(logging.WARNING)
 
 def main(args):
     # Load Dataset
@@ -27,27 +30,51 @@ def main(args):
     series = series_dataset.load(
         subset=args.subset, train_length=args.train_data, test_length=args.test_data, na_threshold=0.1)
 
+    # Load Weather Data
+    if args.use_covariates:
+        assert args.dataset == 'shell', 'Covariates are only available for Shell dataset.'
+        weather_dataset = WeatherEcadDataset().load()
+        # Scale series Data
+        weather_scaler = Scaler(MinMaxScaler())
+        weather_train = weather_scaler.fit_transform(weather_dataset['train'])
+        weather_test = weather_scaler.transform(weather_dataset['test'])
+    else:
+        weather_train, weather_test = None, None
+
+    # Use datetime features
+    if args.datetime_features:
+        encoder = past_datetime_encoder
+    else:
+        encoder = None
+
     # Scale series Data
     series_scaler = Scaler(MinMaxScaler())
     series_train = series_scaler.fit_transform(series['train'])
     series_test = series_scaler.transform(series['test'])
 
+    # Train and Predict
     if args.model == 'Baseline':
-        predictions = train_predict_baseline(series_train, series_test, args.forecast_horizon)
+        predictions = train_predict_baseline(
+            series_train, series_test, args.forecast_horizon)
     elif args.model == 'ARIMA':
-        predictions = train_predict_arima(series_train, series_test, args.forecast_horizon)
+        predictions = train_predict_arima(
+            series_train, series_test, args.forecast_horizon)
     elif args.model == 'Transformer':
-        predictions = train_predict_transformer(series_train, series_test, args.forecast_horizon)
+        predictions = train_predict_transformer(
+            series_train, series_test, encoder, args.forecast_horizon, weather_train, weather_test)
     elif args.model == 'NHiTS-Local':
-        predictions = train_predict_nhits_local(series_train, series_test, args.forecast_horizon)
+        predictions = train_predict_nhits_local(
+            series_train, series_test, encoder, args.forecast_horizon, weather_train, weather_test)
     elif args.model == 'NHiTS-Global':
         predictions = train_predict_nhits_global(
-            series_train, series_test, args.forecast_horizon, args.seed)
+            series_train, series_test, encoder, args.forecast_horizon, weather_train, weather_test)
     else:
         raise "Model Not Found."
 
+    # Scale back to original scale
     predictions = series_scaler.inverse_transform(predictions)
 
+    # Evaluate
     scores = evaluate(predictions, series['test'])
     return scores
 
@@ -56,7 +83,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Experimental Python script.")
     parser.add_argument("--dataset", type=str, default='paloalto',
                         help="Dataset: shell, paloalto, boulder")
-    parser.add_argument("--model", type=str, default='Baseline', help="")
+    parser.add_argument("--model", type=str, default='Baseline', help="Available Models: Baseline, Transformer, ARIMA, NHiTS-Local, NHiTS-Global")
     parser.add_argument("--forecast_horizon", type=int,
                         default=1, help="Forecast horizon value")
     parser.add_argument("--input_chunk_length", type=int,
@@ -75,7 +102,6 @@ if __name__ == "__main__":
     output = {'args': vars(args), 'results': {}}
     for model in ["Baseline", "ARIMA", "Transformer", "NHiTS-Local", "NHiTS-Global"]:
         args.model = model
-        print(model)
         scores = main(args)
         output["results"][model] = scores
 
