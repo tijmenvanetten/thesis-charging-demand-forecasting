@@ -1,0 +1,353 @@
+{
+    "args": {
+        "dataset": "paloalto",
+        "forecast_horizon": 1,
+        "input_chunk_length": 30,
+        "use_covariates": false,
+        "train_data": 600,
+        "test_data": 90,
+        "train_length": 120
+    },
+    "results": {
+        "600": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 21.24,
+                    "MSE": 478.56,
+                    "MAE": 16.53,
+                    "MAPE": 283.06
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 20.07,
+                    "MSE": 428.4,
+                    "MAE": 16.19,
+                    "MAPE": 52.01
+                }
+            }
+        ],
+        "570": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 20.61,
+                    "MSE": 465.86,
+                    "MAE": 16.25,
+                    "MAPE": 64.1
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 19.88,
+                    "MSE": 422.52,
+                    "MAE": 15.75,
+                    "MAPE": 54.96
+                }
+            }
+        ],
+        "540": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 21.36,
+                    "MSE": 503.37,
+                    "MAE": 17.0,
+                    "MAPE": 68.58
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 19.65,
+                    "MSE": 416.6,
+                    "MAE": 15.57,
+                    "MAPE": 53.75
+                }
+            }
+        ],
+        "510": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 22.98,
+                    "MSE": 593.55,
+                    "MAE": 18.9,
+                    "MAPE": 57.99
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 19.59,
+                    "MSE": 413.53,
+                    "MAE": 15.35,
+                    "MAPE": 55.5
+                }
+            }
+        ],
+        "480": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 21.78,
+                    "MSE": 521.65,
+                    "MAE": 17.36,
+                    "MAPE": 763.79
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 19.1,
+                    "MSE": 392.41,
+                    "MAE": 14.76,
+                    "MAPE": 56.15
+                }
+            }
+        ],
+        "450": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 21.03,
+                    "MSE": 470.41,
+                    "MAE": 16.72,
+                    "MAPE": 76.39
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 19.45,
+                    "MSE": 409.22,
+                    "MAE": 14.98,
+                    "MAPE": 61.92
+                }
+            }
+        ],
+        "420": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 20.27,
+                    "MSE": 437.9,
+                    "MAE": 15.86,
+                    "MAPE": 66.01
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 19.77,
+                    "MSE": 422.6,
+                    "MAE": 15.62,
+                    "MAPE": 54.86
+                }
+            }
+        ],
+        "390": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 20.87,
+                    "MSE": 468.88,
+                    "MAE": 16.55,
+                    "MAPE": 69.92
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 21.17,
+                    "MSE": 481.16,
+                    "MAE": 15.51,
+                    "MAPE": 167.38
+                }
+            }
+        ],
+        "360": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 20.24,
+                    "MSE": 441.78,
+                    "MAE": 16.05,
+                    "MAPE": 57.71
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 19.43,
+                    "MSE": 408.31,
+                    "MAE": 15.21,
+                    "MAPE": 54.01
+                }
+            }
+        ],
+        "330": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 19.97,
+                    "MSE": 427.35,
+                    "MAE": 15.49,
+                    "MAPE": 65.15
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 20.61,
+                    "MSE": 457.48,
+                    "MAE": 16.74,
+                    "MAPE": 52.0
+                }
+            }
+        ],
+        "300": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 20.07,
+                    "MSE": 433.01,
+                    "MAE": 15.76,
+                    "MAPE": 61.48
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 19.8,
+                    "MSE": 423.3,
+                    "MAE": 15.05,
+                    "MAPE": 75.69
+                }
+            }
+        ],
+        "270": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 19.91,
+                    "MSE": 426.0,
+                    "MAE": 14.89,
+                    "MAPE": 72.37
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 19.74,
+                    "MSE": 423.41,
+                    "MAE": 15.13,
+                    "MAPE": 66.68
+                }
+            }
+        ],
+        "240": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 19.66,
+                    "MSE": 418.58,
+                    "MAE": 14.97,
+                    "MAPE": 62.34
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 20.06,
+                    "MSE": 435.9,
+                    "MAE": 15.29,
+                    "MAPE": 71.65
+                }
+            }
+        ],
+        "210": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 19.92,
+                    "MSE": 429.67,
+                    "MAE": 14.88,
+                    "MAPE": 69.72
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 19.91,
+                    "MSE": 426.26,
+                    "MAE": 15.69,
+                    "MAPE": 60.3
+                }
+            }
+        ],
+        "180": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 20.03,
+                    "MSE": 437.83,
+                    "MAE": 15.2,
+                    "MAPE": 73.25
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 20.03,
+                    "MSE": 430.83,
+                    "MAE": 15.59,
+                    "MAPE": 75.01
+                }
+            }
+        ],
+        "150": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 21.23,
+                    "MSE": 513.21,
+                    "MAE": 16.44,
+                    "MAPE": 73.87
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 22.45,
+                    "MSE": 570.59,
+                    "MAE": 16.89,
+                    "MAPE": 202.23
+                }
+            }
+        ],
+        "120": [
+            {
+                "model": "NHiTS (Local)",
+                "scores": {
+                    "RMSE": 21.65,
+                    "MSE": 515.03,
+                    "MAE": 16.56,
+                    "MAPE": 74.72
+                }
+            },
+            {
+                "model": "NHiTS (Global)",
+                "scores": {
+                    "RMSE": 22.44,
+                    "MSE": 537.47,
+                    "MAE": 18.15,
+                    "MAPE": 61.23
+                }
+            }
+        ]
+    }
+}
