@@ -1,0 +1,47 @@
+{
+    "args": {
+        "dataset": "boulder",
+        "model": "NHiTS-Global",
+        "forecast_horizon": 1,
+        "input_chunk_length": 30,
+        "use_covariates": false,
+        "datetime_features": false,
+        "train_data": 240,
+        "test_data": 90,
+        "na_threshold": 0.1,
+        "subset": null,
+        "seed": 42
+    },
+    "results": {
+        "Baseline": {
+            "RMSE": 25.43,
+            "MSE": 671.17,
+            "MAE": 20.49,
+            "MAPE": 51.74
+        },
+        "ARIMA": {
+            "RMSE": 28.57,
+            "MSE": 835.8,
+            "MAE": 22.53,
+            "MAPE": 88.22
+        },
+        "Transformer": {
+            "RMSE": 29.15,
+            "MSE": 916.62,
+            "MAE": 24.15,
+            "MAPE": 57.36
+        },
+        "NHiTS-Local": {
+            "RMSE": 25.66,
+            "MSE": 686.16,
+            "MAE": 20.78,
+            "MAPE": 48.38
+        },
+        "NHiTS-Global": {
+            "RMSE": 24.81,
+            "MSE": 637.06,
+            "MAE": 19.67,
+            "MAPE": 50.83
+        }
+    }
+}

@@ -1,11 +1,11 @@
 from .data_utils import CovariatesDatasetLoader, TargetDatasetLoader
 
 class WeatherEcadDataset(CovariatesDatasetLoader):
-    def __init__(self):
+    def __init__(self, value_cols=['temp_max', 'temp_min', 'sunshine', 'precip'], *args, **kwargs):
         super().__init__(
             path='C:/Users/tijmen.vanetten/Documents/emobility-vanetten/data/03_processed/weather_ecad.csv',
             time_col='date', 
-            value_cols=['temp_max', 'temp_min', 'sunshine', 'precip'],
+            value_cols=value_cols,
             freq='D'
         )
 

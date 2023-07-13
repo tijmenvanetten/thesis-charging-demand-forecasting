@@ -1,0 +1,47 @@
+{
+    "args": {
+        "dataset": "paloalto",
+        "model": "NHiTS-Global",
+        "forecast_horizon": 1,
+        "input_chunk_length": 30,
+        "use_covariates": false,
+        "datetime_features": false,
+        "train_data": 240,
+        "test_data": 90,
+        "na_threshold": 0.1,
+        "subset": null,
+        "seed": 42
+    },
+    "results": {
+        "Baseline": {
+            "RMSE": 21.8,
+            "MSE": 487.29,
+            "MAE": 17.37,
+            "MAPE": 53.42
+        },
+        "ARIMA": {
+            "RMSE": 26.04,
+            "MSE": 702.77,
+            "MAE": 20.29,
+            "MAPE": 132.64
+        },
+        "Transformer": {
+            "RMSE": 24.24,
+            "MSE": 612.1,
+            "MAE": 18.64,
+            "MAPE": 69.66
+        },
+        "NHiTS-Local": {
+            "RMSE": 22.85,
+            "MSE": 545.2,
+            "MAE": 17.31,
+            "MAPE": 69.55
+        },
+        "NHiTS-Global": {
+            "RMSE": 22.55,
+            "MSE": 534.88,
+            "MAE": 16.95,
+            "MAPE": 75.06
+        }
+    }
+}

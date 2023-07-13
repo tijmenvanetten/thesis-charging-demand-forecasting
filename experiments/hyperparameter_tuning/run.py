@@ -10,7 +10,7 @@ from datetime import datetime
 from sklearn.preprocessing import MinMaxScaler
 from darts.dataprocessing.transformers.scaler import Scaler
 
-from train import train_predict_arima, train_predict_baseline, train_predict_nhits_global, train_predict_transformer, train_predict_nhits_local
+# from train import train_predict_arima, train_predict_baseline, train_predict_nhits_global, train_predict_transformer, train_predict_nhits_local
 from features.encoders import past_datetime_encoder
 from evaluation import evaluate
 from datasets import ShellDataset, PaloAltoDataset, BoulderDataset, WeatherEcadDataset, load_dataset
@@ -18,22 +18,16 @@ from datasets import ShellDataset, PaloAltoDataset, BoulderDataset, WeatherEcadD
 
 logging.getLogger("pytorch_lightning").setLevel(logging.WARNING)
 
-
 def main(args):
+    # Load Dataset
     series_dataset = load_dataset(args.dataset)
     series = series_dataset.load(
         subset=args.subset, train_length=args.train_data, test_length=args.test_data, na_threshold=0.1)
-    
-    # Scale series Data
-    series_scaler = Scaler(MinMaxScaler())
-    series_train = series_scaler.fit_transform(series['train'])
-    series_test = series_scaler.transform(series['test'])
 
     # Load Weather Data
     if args.use_covariates:
         assert args.dataset == 'shell', 'Covariates are only available for Shell dataset.'
-        weather_dataset = WeatherEcadDataset(value_cols=['temp_max']).from_series(series_train, series_test)
-
+        weather_dataset = WeatherEcadDataset().load()
         # Scale series Data
         weather_scaler = Scaler(MinMaxScaler())
         weather_train = weather_scaler.fit_transform(weather_dataset['train'])
@@ -42,7 +36,15 @@ def main(args):
         weather_train, weather_test = None, None
 
     # Use datetime features
-    encoder = past_datetime_encoder if args.datetime_features else None
+    if args.datetime_features:
+        encoder = past_datetime_encoder
+    else:
+        encoder = None
+
+    # Scale series Data
+    series_scaler = Scaler(MinMaxScaler())
+    series_train = series_scaler.fit_transform(series['train'])
+    series_test = series_scaler.transform(series['test'])
 
     # Train and Predict
     if args.model == 'Baseline':
@@ -80,8 +82,8 @@ if __name__ == "__main__":
                         default=1, help="Forecast horizon value")
     parser.add_argument("--input_chunk_length", type=int,
                         default=30, help="Input chunk length value")
-    parser.add_argument("--use_covariates",
-                        default=False,  action='store_true', help="Use covariates value")
+    parser.add_argument("--use_covariates", type=bool,
+                        default=False, help="Use covariates value")
     parser.add_argument("--datetime_features",
                         default=False, action='store_true', help="Use datetime features")
     parser.add_argument("--train_data", type=int,
@@ -93,7 +95,6 @@ if __name__ == "__main__":
     parser.add_argument("--subset", type=int,
                         default=None, help="Train data value")
     parser.add_argument("--seed", type=int, default=42, help="Random Seed")
-
     args = parser.parse_args()
 
     output = {'args': vars(args), 'results': {}}

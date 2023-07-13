@@ -3,12 +3,13 @@ from darts.utils.timeseries_generation import holidays_timeseries
 from darts.dataprocessing.transformers import Scaler
 
 past_datetime_encoder = {
-    'datetime_attribute': {'past': ['dayofweek']},
-    'transformer': Scaler()
+    # 'datetime_attribute': {'past': ['dayofweek', 'weekend']},
+    'transformer': Scaler(),
+    'custom': {'past': [lambda idx: (idx.dayofweek > 4)]},
 }
 
 future_datetime_encoder = {
-    'datetime_attribute': {'past': ['dayofweek']},
+    'datetime_attribute': {'past': ['dayofweek', 'weekend']},
     'transformer': Scaler()
 }
 

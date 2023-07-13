@@ -44,21 +44,23 @@ def load_model(model, input_chunk_length, output_chunk_length, encoder=None, see
         >>> model = load_model(model_args)
     """
     if model == 'TFT':
-        return load_tftmodel(input_chunk_length, output_chunk_length, encoder=None, seed=42, **kwargs)
+        return load_tftmodel(input_chunk_length, output_chunk_length, encoder=encoder, seed=seed, **kwargs)
     elif model == 'TCN':
-        return load_tcnmodel(input_chunk_length, output_chunk_length, encoder=None, seed=42, **kwargs)
+        return load_tcnmodel(input_chunk_length, output_chunk_length, encoder=encoder, seed=seed, **kwargs)
     elif model == 'NBEATS':
-        return load_nbeatsmodel(input_chunk_length, output_chunk_length, encoder=None, seed=42, **kwargs)
+        return load_nbeatsmodel(input_chunk_length, output_chunk_length, encoder=encoder, seed=seed, **kwargs)
+    elif model == 'Transformer':
+        return load_transformermodel(input_chunk_length, output_chunk_length, encoder=encoder, seed=seed, **kwargs)
     elif model == 'XGB':
-        return load_xgbmodel(input_chunk_length, output_chunk_length, encoder=None, seed=42, **kwargs)
+        return load_xgbmodel(input_chunk_length, output_chunk_length, encoder=encoder, seed=seed, **kwargs)
     elif model == 'ARIMA':
-        return load_arimamodel(input_chunk_length, output_chunk_length, encoder=None, seed=42, **kwargs)
+        return load_arimamodel(input_chunk_length, output_chunk_length, encoder=encoder, seed=seed, **kwargs)
     elif model == 'Baseline':
-        return load_naivemean(input_chunk_length, output_chunk_length, encoder=None, seed=42, **kwargs)
+        return load_naivemean(input_chunk_length, output_chunk_length, encoder=encoder, seed=seed, **kwargs)
     elif model == 'DeepAR':
-        return load_deepar(input_chunk_length, output_chunk_length, encoder=None, seed=42, **kwargs)
+        return load_deepar(input_chunk_length, output_chunk_length, encoder=encoder, seed=seed, **kwargs)
     elif model == 'NHiTS':
-        return load_nhitsmodel(input_chunk_length, output_chunk_length, encoder=None, seed=42, **kwargs)
+        return load_nhitsmodel(input_chunk_length, output_chunk_length, encoder=encoder, seed=seed, **kwargs)
     else:
         raise ValueError("Could not find specified model.")
 
@@ -68,6 +70,24 @@ def load_nhitsmodel(input_chunk_length, output_chunk_length, encoder=None, seed=
 
     return NHiTSModel(
         nr_epochs_val_period=1,
+        input_chunk_length=input_chunk_length,
+        output_chunk_length=output_chunk_length,
+        random_state=seed,
+        add_encoders=encoder,
+        pl_trainer_kwargs={"callbacks": [load_earlystopper()], "log_every_n_steps": 1},
+    )
+
+
+
+def load_transformermodel(input_chunk_length, output_chunk_length, encoder=None, seed=42):
+    from darts.models import TransformerModel
+
+    return TransformerModel(
+        nr_epochs_val_period=1,
+        nhead=8,
+        num_encoder_layers=1,
+        num_decoder_layers=1,
+        dim_feedforward=128,
         input_chunk_length=input_chunk_length,
         output_chunk_length=output_chunk_length,
         random_state=seed,
@@ -88,7 +108,7 @@ def load_deepar(input_chunk_length, output_chunk_length, encoder=None, seed=42):
         nr_epochs_val_period=1,
         input_chunk_length=30,
         output_chunk_length=output_chunk_length,
-        random_state=0,
+        random_state=seed,
         likelihood=GaussianLikelihood(),
         pl_trainer_kwargs={"callbacks": [load_earlystopper()]}
     )
@@ -111,7 +131,7 @@ def load_tcnmodel(input_chunk_length, output_chunk_length, encoder=None, seed=42
         add_encoders=encoder,
         n_epochs=20,
        
-        random_state=0,
+        random_state=seed,
         pl_trainer_kwargs={"callbacks": [load_earlystopper()], "log_every_n_steps": 1},
     )
 
@@ -127,7 +147,7 @@ def load_tftmodel(input_chunk_length, output_chunk_length, encoder=None, seed=42
         nr_epochs_val_period=1,
         input_chunk_length=input_chunk_length,
         output_chunk_length=output_chunk_length,
-        random_state=0,
+        random_state=seed,
         likelihood=None,
         loss_fn=torch.nn.MSELoss(),
         pl_trainer_kwargs={"callbacks": [load_earlystopper()], "log_every_n_steps": 1},

@@ -1,0 +1,47 @@
+{
+    "args": {
+        "dataset": "shell",
+        "model": "NHiTS-Global",
+        "forecast_horizon": 1,
+        "input_chunk_length": 30,
+        "use_covariates": false,
+        "datetime_features": false,
+        "train_data": 240,
+        "test_data": 90,
+        "na_threshold": 0.1,
+        "subset": null,
+        "seed": 42
+    },
+    "results": {
+        "Baseline": {
+            "RMSE": 124.35,
+            "MSE": 21177.06,
+            "MAE": 101.35,
+            "MAPE": 41.75
+        },
+        "ARIMA": {
+            "RMSE": 125.65,
+            "MSE": 20676.74,
+            "MAE": 99.88,
+            "MAPE": 62.21
+        },
+        "Transformer": {
+            "RMSE": 134.62,
+            "MSE": 25187.42,
+            "MAE": 111.62,
+            "MAPE": 57.77
+        },
+        "NHiTS-Local": {
+            "RMSE": 126.0,
+            "MSE": 22564.14,
+            "MAE": 103.45,
+            "MAPE": 107.18
+        },
+        "NHiTS-Global": {
+            "RMSE": 101.37,
+            "MSE": 13962.17,
+            "MAE": 80.14,
+            "MAPE": 33.55
+        }
+    }
+}
