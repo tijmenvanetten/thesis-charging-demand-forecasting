@@ -1,0 +1,38 @@
+{
+    "args": {
+        "dataset": "paloalto",
+        "forecast_horizon": 30,
+        "model_path": "models\\shell_nhits_global_42_None.pt",
+        "subset": null,
+        "train_data": 600,
+        "test_data": 90,
+        "retrain": false,
+        "seed": 42
+    },
+    "results": {
+        "1": {
+            "NHiTS-Global-Pretrained": {
+                "RMSE": 18.72,
+                "MSE": 373.42,
+                "MAE": 14.78,
+                "MAPE": 52.85
+            }
+        },
+        "7": {
+            "NHiTS-Global-Pretrained": {
+                "RMSE": 19.35,
+                "MSE": 400.48,
+                "MAE": 15.53,
+                "MAPE": 52.11
+            }
+        },
+        "30": {
+            "NHiTS-Global-Pretrained": {
+                "RMSE": 20.78,
+                "MSE": 450.71,
+                "MAE": 17.72,
+                "MAPE": 49.4
+            }
+        }
+    }
+}

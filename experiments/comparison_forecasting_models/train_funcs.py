@@ -51,8 +51,8 @@ def train_predict_transformer(series_train, series_test, encoder, input_chunk_le
             forecast = train_predict_past_covariates(model,
                                                      series_train=series_train_single,
                                                      series_test=series_test_single,
-                                                     covariates_train=covariates_train,
-                                                     covariates_test=covariates_test,
+                                                     past_covariates_train=covariates_train,
+                                                     past_covariates_test=covariates_test,
                                                      horizon=forecast_horizon,
                                                      train_split=0.7,
                                                      retrain=False,
@@ -79,8 +79,8 @@ def train_predict_nhits_local(series_train, series_test, encoder, input_chunk_le
             forecast = train_predict_past_covariates(model,
                                                      series_train=series_train_single,
                                                      series_test=series_test_single,
-                                                     covariates_train=covariates_train,
-                                                     covariates_test=covariates_test,
+                                                     past_covariates_train=covariates_train,
+                                                     past_covariates_test=covariates_test,
                                                      horizon=forecast_horizon,
                                                      train_split=0.7,
                                                      retrain=False,
@@ -109,3 +109,5 @@ def train_predict_nhits_global(series_train, series_test, encoder, input_chunk_l
         predictions = train_predict_global(
             model, series_train, series_test, forecast_horizon, train_split=0.7)
     return predictions
+
+

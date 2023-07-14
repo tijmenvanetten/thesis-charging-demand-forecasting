@@ -65,7 +65,7 @@ def main(args):
 
     # Global Training
     nhits_model = load_nhitsmodel(args.input_chunk_length, args.forecast_horizon, args.use_covariates, args.seed)
-    nhits_model_fit, predictions_nhits_global = train_predict_global(
+    predictions_nhits_global = train_predict_global(
                                                         model=nhits_model,
                                                         series_train=series_train,
                                                         series_test=series_test,

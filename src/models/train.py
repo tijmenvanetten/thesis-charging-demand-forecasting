@@ -82,6 +82,23 @@ def train_predict_global(model, series_train, series_test, horizon, train_split=
         predictions.append(forecast)
     return predictions
 
+def predict_global(model, series_train, series_test, horizon, retrain=False):
+    # create full series for historical forecast later
+    series = [concatenate([series_train_single, series_test_single])
+              for series_train_single, series_test_single in zip(series_train, series_test)]
+
+    predictions = []
+    for series_single, series_test_single in zip(series, series_test):
+        forecast = model.historical_forecasts(
+            series=series_single,
+            start=series_test_single.start_time(),
+            forecast_horizon=horizon,
+            retrain=False,
+        )
+
+        predictions.append(forecast)
+    return predictions
+
 
 def split_series_list(series_list, split):
     series_train_train, series_train_val = [], []
@@ -123,4 +140,4 @@ def train_predict_global_past_covariates(model, series_train, series_test, past_
         )
 
         predictions.append(forecast)
-    return model, predictions
+    return predictions

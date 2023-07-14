@@ -1,0 +1,38 @@
+{
+    "args": {
+        "dataset": "boulder",
+        "forecast_horizon": 30,
+        "model_path": "models\\shell_nhits_global_42_None.pt",
+        "subset": null,
+        "train_data": 240,
+        "test_data": 90,
+        "retrain": true,
+        "seed": 42
+    },
+    "results": {
+        "1": {
+            "NHiTS-Global-Pretrained": {
+                "RMSE": 25.56,
+                "MSE": 674.68,
+                "MAE": 20.49,
+                "MAPE": 49.01
+            }
+        },
+        "7": {
+            "NHiTS-Global-Pretrained": {
+                "RMSE": 26.16,
+                "MSE": 715.15,
+                "MAE": 21.03,
+                "MAPE": 51.42
+            }
+        },
+        "30": {
+            "NHiTS-Global-Pretrained": {
+                "RMSE": 31.88,
+                "MSE": 1078.68,
+                "MAE": 26.95,
+                "MAPE": 41.39
+            }
+        }
+    }
+}
