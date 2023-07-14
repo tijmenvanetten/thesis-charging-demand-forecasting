@@ -8,7 +8,6 @@ Introduction
 ## Requirements
 
 The code uses the Darts library for time series forecasting. Dependencies can be installed via pip:
-```setup
 
 1. Create a new environment
    ```setup
