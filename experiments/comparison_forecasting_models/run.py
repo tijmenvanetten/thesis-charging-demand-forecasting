@@ -10,7 +10,7 @@ from datetime import datetime
 from sklearn.preprocessing import MinMaxScaler
 from darts.dataprocessing.transformers.scaler import Scaler
 
-from train import train_predict_arima, train_predict_baseline, train_predict_nhits_global, train_predict_transformer, train_predict_nhits_local
+from train_funcs import train_predict_arima, train_predict_baseline, train_predict_nhits_global, train_predict_transformer, train_predict_nhits_local
 from features.encoders import past_datetime_encoder
 from evaluation import evaluate
 from datasets import ShellDataset, PaloAltoDataset, BoulderDataset, WeatherEcadDataset, load_dataset
@@ -97,11 +97,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     output = {'args': vars(args), 'results': {}}
+    
     for model in ["Baseline", "ARIMA", "Transformer", "NHiTS-Local", "NHiTS-Global"]:
         args.model = model
-        scores = main(args)
-        output["results"][model] = scores
+        output["results"][model] = {}
+        for forecast_horizon in [1, 7, 30]:
+            args.forecast_horizon = forecast_horizon
+            scores = main(args)
+            output["results"][model][forecast_horizon] = scores
 
     time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    with open(f'results/{time}_{args.dataset}_comparison_{args.forecast_horizon}_{args.seed}.json', 'w') as f:
+    with open(f'results/{args.dataset}_results.json', 'w') as f:
         json.dump(output, f, indent=4)
